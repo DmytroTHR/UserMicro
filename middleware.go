@@ -16,7 +16,7 @@ func serverInterceptor(ctx context.Context,
 	handler grpc.UnaryHandler) (interface{}, error) {
 	var err error
 	switch info.FullMethod {
-	case "/proto.UserService/SetUsersRole", "/proto.UserService/GetUserByID":
+	case "/user.UserService/SetUsersRole", "/user.UserService/GetUserByID":
 		err = checkIfAdmin(ctx)
 	}
 	if err != nil {
