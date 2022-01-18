@@ -4,10 +4,18 @@ import (
 	"os"
 )
 
-var PG_HOST = os.Getenv("PG_HOST")
-var PG_PORT = os.Getenv("PG_PORT")
-var POSTGRES_DB = os.Getenv("POSTGRES_DB")
-var POSTGRES_USER = os.Getenv("POSTGRES_USER")
-var POSTGRES_PASSWORD = os.Getenv("POSTGRES_PASSWORD")
-var GRPC_PORT = os.Getenv("USERS_GRPC_PORT")
-var TOKEN_SECRET = os.Getenv("TOKEN_SECRET")
+var PG_HOST = getStringParameter("PG_HOST", "localhost")
+var PG_PORT = getStringParameter("PG_PORT", "5444")
+var POSTGRES_DB = getStringParameter("POSTGRES_DB", "scooterdb")
+var POSTGRES_USER = getStringParameter("POSTGRES_USER", "scooteradmin")
+var POSTGRES_PASSWORD = getStringParameter("POSTGRES_PASSWORD", "Megascooter!")
+var GRPC_PORT = getStringParameter("USERS_GRPC_PORT", "5555")
+var TOKEN_SECRET = getStringParameter("TOKEN_SECRET", "SomeSuperSECRETpassword123!#$")
+
+func getStringParameter(paramName, defaultValue string) string {
+	result, ok := os.LookupEnv(paramName)
+	if !ok {
+		result = defaultValue
+	}
+	return result
+}
