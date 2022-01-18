@@ -4,6 +4,7 @@ import (
 	"UserMicro/proto"
 	"context"
 	"database/sql"
+	"golang.org/x/crypto/bcrypt"
 )
 
 type UserRepositoryServer interface {
@@ -28,9 +29,13 @@ func (repo *UserRepo) Create(ctx context.Context, user *proto.User) (*proto.User
 	RETURNING id;`
 	role, err := getRoleByPermissions(repo, map[string]bool{"is_customer": true})
 	if err != nil {
-		return nil, err
+		return &proto.User{}, err
 	}
-	row := repo.db.QueryRowContext(ctx, query, user.Email, user.Name, user.Surname, role.Id, user.Password)
+	passwordHash, errHash := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
+	if errHash != nil {
+		return &proto.User{}, errHash
+	}
+	row := repo.db.QueryRowContext(ctx, query, user.Email, user.Name, user.Surname, role.Id, passwordHash)
 	err = row.Scan(&user.Id)
 
 	return user, err

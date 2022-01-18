@@ -26,7 +26,7 @@ func serverInterceptor(ctx context.Context,
 	return handler(ctx, req)
 }
 
-func checkIfAdmin(ctx context.Context)	error{
+func checkIfAdmin(ctx context.Context) error {
 	meta, ok := metadata.FromIncomingContext(ctx)
 	if !ok {
 		return status.Errorf(codes.InvalidArgument, "No metadata retreived")
