@@ -37,6 +37,7 @@ func (repo *UserRepo) Create(ctx context.Context, user *proto.User) (*proto.User
 	}
 	row := repo.db.QueryRowContext(ctx, query, user.Email, user.Name, user.Surname, role.Id, passwordHash)
 	user.Password = string(passwordHash)
+	user.Role = role
 	err = row.Scan(&user.Id)
 
 	return user, err
