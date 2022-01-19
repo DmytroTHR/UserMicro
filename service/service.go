@@ -17,7 +17,7 @@ type UserService struct {
 
 func NewUserService(repo *sql.DB, tokenServ *TokenService) *UserService {
 	return &UserService{
-		Repo: repository.NewUserRepo(repo),
+		Repo:         repository.NewUserRepo(repo),
 		tokenService: tokenServ,
 	}
 }
@@ -88,6 +88,8 @@ func (serv *UserService) ValidateToken(ctx context.Context, token *proto.Token) 
 
 	return &proto.Response{
 		Success: true,
+		User:    claims.User,
+		Role:    claims.User.Role,
 		Token:   token}, nil
 
 }
