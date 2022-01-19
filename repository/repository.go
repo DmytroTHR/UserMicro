@@ -25,7 +25,7 @@ func NewUserRepo(db *sql.DB) *UserRepo {
 
 func (repo *UserRepo) Create(ctx context.Context, user *proto.User) (*proto.User, error) {
 	query := `INSERT INTO users(login_email, user_name, user_surname, role_id, password_hash)
-	VALUES($1, $2, $3, $4)
+	VALUES($1, $2, $3, $4, $5)
 	RETURNING id;`
 	role, err := getRoleByPermissions(repo, map[string]bool{"is_customer": true})
 	if err != nil {
@@ -36,6 +36,7 @@ func (repo *UserRepo) Create(ctx context.Context, user *proto.User) (*proto.User
 		return &proto.User{}, errHash
 	}
 	row := repo.db.QueryRowContext(ctx, query, user.Email, user.Name, user.Surname, role.Id, passwordHash)
+	user.Password = string(passwordHash)
 	err = row.Scan(&user.Id)
 
 	return user, err
